@@ -1,0 +1,13 @@
+Q1: What program you decided to use on your computer to do the copying to/from Mimi?
+As per prof Jake's recommendation, I decided to use rsync on my computer to do the copying to/from Mimi.
+
+Q2: What did you do to install this program? *At most two sentences.*
+First, I installed Windows Subsystem for Linux (WSL) by running wsl --install in my Windows PowerShell. Finally after setting it up, I used the WSL shell to apt install rsync.
+
+Q3: In at most three sentences, describe how to use the program to copy a file from your computer onto mimi
+First, create and know the path to your local file as well as the mimi remote directory you'd like to copy it to. Finally, open up the WSL shell and run the command 
+
+rsync /path/to/your/local/file yourMimiUsername@mimi.cs.mcgill.ca:/path/on/mimi/you/want/to/copy/it/to
+
+For example, I used this to copy over my screenshot:
+rsync /mnt/c/Users/natas/Downloads/screenshot.png nlawfo@mimi.cs.mcgill.ca:/home/2024/nlawfo/fall2024-comp206/assignments/hw1/

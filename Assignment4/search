@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#Recursive function to search directories
+search_files() {
+    local DIR=$2     
+    local NAME=$3    
+
+    local item
+    for item in "$DIR"/* ; do
+        #Check if item is a file #cool
+        if [ -f "$item" ]; then
+            #Check if the file name matches the target name
+            if [ "$(basename "$item")" = "$NAME" ]; then
+                echo "$item"  #Print the full path to the matching file
+            fi
+        fi
+        #If the entry is a directory, go into it!
+        if [ -d "$item" ]; then
+            search_files $((DEPTH+1)) "$item" "$NAME"
+        fi
+    done
+}
+
+if [ "$#" -ne 2 ]; then
+    echo "Wrong number of inputs, instead use: $0 WRITE NAME"
+    exit 1
+fi
+
+#Call the search function with the starting directory and file name
+search_files 0 "$1" "$2"
+

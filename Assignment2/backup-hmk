@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#Step 1: create the subdirectory backups if it does not exist already within the working directory
+#!/bin/bash
+
+if [ ! -d "backups" ]; then
+    mkdir backups
+    echo "Backups directory created."
+fi
+
+#Step 2: Make the date the same as prof Jake wanted:
+current_date=$(date +"%Y-%m-%dT%T")
+
+# Create the tar.gz backup file with a timestamp in the name
+tar -czf backups/assignments-$current_date.tar.gz assignments
+
+# Print confirmation message
+echo "Created backup: backups/assignments-$current_date.tar.gz"
+

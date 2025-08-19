@@ -1,0 +1,60 @@
+#!/bin/bash
+
+if [ "$#" -ne 1 ]; then
+	echo "Incorrect number of input commands. Use 1 command."
+	exit 1
+fi
+
+operation=$1
+
+unique-ips(){
+grep -oP "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" jerrington.me.log |sort|uniq|wc -l
+}
+
+reqs-per-day(){
+        local total=$(grep -oP "\[\d{2}\/\w{3}\/\d{4}" jerrington.me.log -c)
+        local unique_dates=$(grep -oP "\[\d{2}\/\w{3}\/\d{4}" jerrington.me.log | sort | uniq | wc -l)
+        echo $((total/unique_dates))
+}
+
+most-popular-post(){
+	local stats_top=$(grep -P "GET /posts/.*\"\s2\d\d.*" jerrington.me.log | sed 's/.*GET \/posts\///' | sed 's/\s.*//' | sort | uniq -c | sort -nr | head -n 1)
+	local num_occurence=$(echo "$stats_top"| awk '{print $1}')
+	local occurence_name=$(echo "$stats_top"| awk '{print $2}')
+	echo "The top post is $occurence_name with $num_occurence successful requests"	
+}
+
+ 
+total-transferred() {
+    sum=0  #sum to 0
+
+    numbers=$(grep -oP "\"\s\d{3}\s\d{1,}" jerrington.me.log | awk '{print $3}')
+
+    # Iterate over each number
+    while read -r number; do
+        sum=$((sum + number))
+    done <<< "$numbers"
+
+    echo $sum
+}
+
+
+if [ "$operation" = "unique-ips" ]; then	
+	unique-ips
+	exit 0
+elif [ "$operation" = "reqs-per-day" ]; then
+	reqs-per-day
+	exit 0
+elif [ "$operation" = "most-popular-post" ]; then
+	most-popular-post 
+	exit 0
+elif [ "$operation" = "total-transferred" ]; then
+	total-transferred
+	exit 0
+fi
+
+
+
+
+
+exit 0

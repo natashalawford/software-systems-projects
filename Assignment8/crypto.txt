@@ -1,0 +1,26 @@
+1. What are the three pillars of information security? Describe each in a sentence.
+
+- Confidentiality: Making sure that users that are not supposed to have access, cannot gain access to the given data (no unauthorized access).
+- Integrity: Ensuring information cannot be be lost or corrupted (protected from unauthorized changes).
+- Availibility: Authorized users may reliably access the given information.
+  
+A hacker breaks into a hospital system and encrypts all patient records until receipt of payment. This is known as a ransomware attack. What pillar of information security is undermined by this attack?
+
+I would assume that this undermines the Availibility pillar, as the typical authorized users no longer have access to their information/patient database. Needing to wait until a "ransom" is paid for a key to decrypt the data, does not offer a reliable/anytime access of the database for authorized users (doctors, patients, etc.)   
+
+A hacker breaks into a payment processor's database, extracts all its information, and sells it to criminals. What pillar of information security is undermined by this attack?
+
+I think this undermines the confidentiality pillar, as an unauthorized individual now have access to personal / private information and is giving this sensitive data to other unauthorized parties.
+
+
+2. Explain to what end and under what circumstances two parties would use the Diffie-Hellman key exchange algorithm.
+
+In terms of the purpose, the Diffie-Hellman key exchange would be used by two parties to securely establish a shared secret key over a potentially insecure communication channel (1 public paint as described in class) without the key ever being transmitted. The shared key can then be used for encryption and thus secure communication between the two parties. In terms of the circumstances, the Diffie-Hellman key exchange would be used when two parties want to first establish a secure communication channel without prior key sharing, and over a potentially insecure communication channel since the shared secret is derived mathematically and thus is eavesdropper-proof.
+
+3. Explain how the RSA algorithm can be used to prove ownership of a private key.
+
+The owner of a private key can encrypt a message that anyone with the public key can decrypt. To prove ownership, they should encrypt (/sign) a message and declare what it should decrypt to. If decryption with the public key produces the expected result, it confirms they are the owner of the private key, as only the private key owner could encrypt the message in a way that aligns with the public key! #fire
+
+4.Assume that you and I have a preshared key K. Explain how you can use this key to attach an authentication code to a message that certifies to me that you authored the message without encrypting the message.
+
+If we have a preshared key K, I can use it to attach a Message Authentication Code (MAC) to a message to prove that I authored it. To do this, I append K to the message, compute a cryptographic hash of the result, and send you the original message along with the computed hash. When you receive the message, you append K to it, compute the hash, and compare it to the one I sent. If the hashes match, you can be sure that I authored the message, as only someone with the preshared key K could create the correct MAC. 

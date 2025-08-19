@@ -1,0 +1,35 @@
+0. what part of the source code vurlnerable.c is unsafe? Why?
+
+The vulnerability of the program is the buffer in the read_std_line function. There is no restrictions on how many characters that can be inputted by the user, even though the capacity on the stack for it is 40 chars, thus allowing for possible buffer overflow and thus a buffer overflow attack!
+
+4.1 Which instructions correspond to initializing the variables admin and login_successful with zero? 
+
+   0x000000000000121d <+20>:    mov    DWORD PTR [rbp-0x4],0x0 ; //for admin = 0 
+   0x0000000000001224 <+27>:    mov    DWORD PTR [rbp-0x8],0x0 ; //for login_successful = 0
+
+4.2 Why is there no instruction that initializes buf?
+
+There isn't any instructions that initializes buf since pointers are first initialized pointing to garbage values that are on the stack already
+
+4.3 What value is passed as input to the read_stdin_line function? Express as an offset of rbp.
+
+The value passed as input to read_stdin_line is the address [rbp-0x40] 
+
+5. Make a small textual diagram on the RAM in this function indicating which ranges of bytes (as offsets of rbp) store the values of the admin, login_successful, and buf.
+
+| Offset              | Variable           |
+|---------------------|--------------------|
+| rbp+0x0             | Return Address     |
+| rbp-0x4             | admin              |
+| rbp-0x8             | login_successful   |
+| rbp-0x48            | buf                | 
+
+7. My chosen string is A 45 times since it overflows the byte range of 40 for the buf and the byte range of 4 for the login_successful, into the admin variable. This is shown in the diagram above,, where 45 bytes from buf is inside the admin variable. By altering the admin variable it becomes a non-zero, making all the conditionals involving admin will pass, and therefore the flag will be revealed.
+
+8. FLAG: YOUARE_A_TETRISCHAMPION
+
+9. A small change that I could make, without addressing the buffer overflow itself is we could change the program to store admin and login_successful in separate memory regions from buf. using the volatile keyword keeps admon and login_successful in a memory region off the stack, making them harder to overwrite via buffer overflow attacks:
+
+volatile int admin = 0;
+volatile int login_successful = 0;
+ 

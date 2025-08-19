@@ -1,0 +1,61 @@
+#!/bin/bash
+
+#Check to see if there are two inputs:
+if [ "$#" != 2 ]; then
+  echo "Invalid number of inputs, use instead: $0 {count|total|average} COUNTRY"
+  exit 1
+fi
+
+#Storing the inputted operation and country
+operation=$1
+country=$2
+
+#Check if inputted operation is valid
+if [[ "$operation" != "count" && "$operation" != "total" && "$operation" != "average" ]]; then
+  echo "Invalid operation: '$operation'. Use 'count', 'total', or 'average'"
+  exit 2
+fi
+
+#rows-for function / all rows relating to a given country
+rows-for(){
+        local country=$1
+	awk -F',' -v country="$country" '$4 == country' worldcities.csv
+}
+
+sum(){
+	local total=0
+
+	while read number; do
+		total=$((total + number))
+	done
+
+	echo "$total"
+}
+
+count(){
+        rows-for "$1" | wc -l
+}
+
+total(){
+        rows-for "$1"|cut -d',' -f8|sum
+}
+
+average(){
+	local total_num=$(count "$1")
+	local sum=$(total "$1")
+
+	if [[ "$total_num" -eq 0 || "$sum" -eq 0 ]]; then
+        	echo 0
+    	else
+        	echo $((sum / total_num))
+    	fi
+}
+
+if [ "$operation" = "count" ]; then
+    count "$country"
+elif [ "$operation" = "total" ]; then
+    total "$country"
+else
+	average "$country"
+fi
+exit 0

@@ -1,0 +1,25 @@
+Q1.1: how do you use tar to create an archive?
+To create an an archive, you start with 'tar' and use the ‘--create’ (‘-c’) operation followed by other operations, e.g. -f (to name), -z (to enable gzip), etc followed by the file(s)/directories you want to put in the archive:
+tar -cf backups/assignments-TEST.tar.gz assignments
+
+Q1.2: how do you use tar to list the contents of an archive?
+To list the contents of an archive, use the '--list' ('-t') operation and '-f' to specify the file. The contents will then be listed:
+tar  -tf assignments-TEST.tar.gz
+assignments
+assignments/assignment_1.txt
+assignments/assignment_2.txt
+
+Q1.3: how do you use tar to extract the entire contents of an archive?
+To extract the entire contents of an archive, us the operation ‘--extract’ (‘--get’ or ‘-x’) followed by the -f operation and the archive name:
+tar -xf assignments-TEST.tar.gz
+
+Q1.4: by default, where do the files get extracted to?
+By default tar files get extracted to the same directory as the archive / or the current working directory
+
+Q1.5: what is the significance of the two extensions .tar.gz?
+.tar at the end indicates an uncompressed archive.
+.gz after this shows the archive is compressed using gzip.
+
+Q1.6: what is a 'tarbomb'? Why could extracting one be dangerous?
+A tarbomb is tarball that when extracted, the contents are unpacked into the current directory, or an existing directory with many items.
+This is dangerous because this can result in overwriting any files and directories that have the same names that are in the existing directory.Important data could be lost and there is no warning for this overwriting. 

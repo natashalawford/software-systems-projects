@@ -1,0 +1,64 @@
+#!/bin/bash
+
+#compile minicalc
+gcc -Wall -o minicalc minicalc.c -lm
+if [ $? -ne 0 ]; then
+    echo "Compilation failed."
+    exit 1
+fi
+
+it() {
+    local test_name="$1"
+    local expected_exit_code="$2"
+    local expected_stdout="$3"
+    local expected_stderr="$4"
+    shift 4
+
+    #run minicalc command and capture outputs
+	./minicalc "$@" > /tmp/stdout 2>/tmp/stderr
+	actual_exit_code=$?
+	actual_stdout=$(< /tmp/stdout)
+	actual_stderr=$(< /tmp/stderr)
+
+    #compare expected vs actual result
+    if [[ "$actual_exit_code" -eq "$expected_exit_code" ]] &&
+       [[ "$actual_stdout" == "$expected_stdout" ]] &&
+       [[ "$actual_stderr" == "$expected_stderr" ]]; then
+        echo "$test_name: OK"
+    else
+        echo "$test_name: FAILED"
+        echo "    expected exit code: $expected_exit_code, actual: $actual_exit_code"
+        echo "    expected stdout: '$expected_stdout', actual: '$actual_stdout'"
+        echo "    expected stderr: '$expected_stderr', actual: '$actual_stderr'"
+    fi
+}
+
+# Test cases
+echo "START OF TESTS:"
+
+# SQUARE ROOT TESTS
+it "Square root of 49 should return 7.00" 0 "7.00" "" "sqrt" "49"
+it "Square root of negative number should error" 4 "" "Error: Negative input number. Input positive number" "sqrt" "-1"
+it "Non-numeric input for sqrt should error" 3 "" "Error: input was not a valid floating-point number" "sqrt" "haha"
+it "Too many operands for sqrt should error" 2 "" "Error: sqrt needs exactly 1 operand." "sqrt" "4" "16"
+
+# GCD TESTS
+it "GCD of 24 and 36 should return 12" 0 "12" "" "gcd" "24" "36"
+it "GCD of single number 7 should return 7" 0 "7" "" "gcd" "7"
+it "GCD of multiple numbers 36, 24, 7 should return 1" 0 "1" "" "gcd" "36" "24" "7"
+it "Negative number input for gcd should error" 3 "" "Error: gcd operands must be strictly greater than 0" "gcd" "2" "-3"
+it "Non-integer input for gcd should error" 3 "" "Error: All inputs must be valid integers" "gcd" "8" "23" "blah"
+
+# ANAGRAM TESTS
+it "Anagram test for 'binary' and 'brainy' should return true" 0 "true" "" "anagram" "binary" "brainy"
+it "Anagram test for 'brainy' and 'drains' should return false" 0 "false" "" "anagram" "brainy" "drains"
+it "Mixed-case input for anagram should error" 3 "" "Error: both strings must be only lowercase letters" "anagram" "natasha" "Ahsatan"
+it "Anagram test with too many arguments should error" 2 "" "Error: anagram needs exactly 2 operands" "anagram" "hello" "world" "extra"
+
+# GENERIC ERROR TESTS
+it "No operation provided should error" 1 "" "Error: please specify an operation (sqrt, gcd, anagram)." 
+it "Unknown operation 'blah' should error" 1 "" "Error: Unknown operation, use sqrt, gcd, or anagram." "blah" "10" "5"
+
+# Run all tests
+echo "END OF TESTS"
+

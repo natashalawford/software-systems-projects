@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Number of arguments check (expecting exactly one argument)
+if [ $# -ne 1 ]; then
+  echo "Error: Invalid number of arguments."
+  echo "Run the script: get-assignment hw<assignment_number>"
+  echo "Try 'get-assignment -h' for more information."
+  exit 1
+fi
+
+# HELP message !!!
+if [ "$1" == "-h" ]; then
+echo "Run the script as: get-assignment hw<assignment_number>"
+echo "This automatically downloads the specified assignment (e.g. hw3) into the ~/fall2024-comp206/assignments directory."
+exit 0
+fi
+
+# Directory to be cloned
+assignment_dir=~/fall2024-comp206/assignments/$1
+
+# Check if the directory already exists
+if [ -d "$assignment_dir" ]; then
+  read -p "Directory $1 already exists. Would you like to delete it and clone again? (y/n): " choice
+  if [ "$choice" != "y" ]; then
+    echo "Exiting without making changes."
+    exit 0
+  else
+    rm -rf "$assignment_dir"
+    echo "Deleted existing directory: $assignment_dir"
+  fi
+fi
+
+# Create a temp file to capture git clone output
+temp_file=$(mktemp)
+
+# Attempt to clone the assignment repository
+git clone https://gitlab.cs.mcgill.ca/jerrin/f24comp206-$1.git "$assignment_dir" &> "$temp_file"
+
+# Check if the git clone command succeeded
+if [ $? -ne 0 ]; then
+  echo "Error: Failed to clone the repository. Git output is as follows:"
+  cat "$temp_file"
+  rm "$temp_file"
+  exit 1
+else
+  echo "Successfully cloned $1 into $assignment_dir"
+fi
+
+# Remove the temporary file
+rm "$temp_file"
+

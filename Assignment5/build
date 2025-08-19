@@ -1,0 +1,47 @@
+#!/bin/bash
+
+gcc -Wall -o minicalc minicalc.c -lm
+
+#If the compilation was successful, run tests:
+if [ $? -eq 0 ]; then
+	echo "Compilation successful, Running tests:"
+    
+	#sqrt test
+	printf "\nSQUARE ROOT TESTS\n"
+   	echo "1. sqrt test, sqrt(49) expected output: 7.00"
+	./minicalc sqrt 49
+	echo "2. sqrt test, sqrt of negative number expected ouput: error"
+	./minicalc sqrt -1
+	echo "3. Not a valid floating-point number test expected output: error"
+	./minicalc sqrt haha
+	echo "4. Too many operands test expected output: error"
+	./minicalc sqrt 4 16
+    
+	#gcd test
+	printf "\nGCD TESTS\n"
+	echo "1. gcd of 24 and 36, expected output: 12"
+    	./minicalc gcd 24 36
+	echo "2. gcd of just 7, expected output: 7"
+    	./minicalc gcd 7 
+     	echo "3. gcd of 36, 24, 7, expected output: 1"
+	./minicalc gcd 36 24 7
+	echo "4. gcd of negative number, expeected output: error"
+	./minicalc gcd 2 -3
+	echo "5. gcd of a non number character, expected output: error"
+	./minicalc gcd 8 23 blah	
+
+    	#anagram test
+	printf "\nANAGRAM TESTS\n"
+	echo "1. anagram for 'binary' and 'brainy', expected output: true"
+    	./minicalc anagram binary brainy
+	echo "2. anagram for 'brainy' and 'drains', expected output: false"
+    	./minicalc anagram brainy drains
+	echo "3. anagram for 'natasha' 'Ahsatan', expected output: error"
+	./minicalc anagram atasha Ahsatan
+
+#Otherwise, it didn't compile :(
+else
+    echo "Compilation failed."
+    exit 1
+fi
+

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+#Get all Unique country names
+tail -n +2 worldcities.csv | cut -d',' -f4 | sort | uniq | while read country; do
+	#For each country use the prev script written to find avg
+	avg=$(./analyze average "$country")
+
+	#Print the country with its corresponding avg
+	echo "$country $avg"
+done
